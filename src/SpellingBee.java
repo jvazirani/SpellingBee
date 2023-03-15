@@ -45,12 +45,68 @@ public class SpellingBee {
     //  that will find the substrings recursively.
     public void generate() {
         // YOUR CODE HERE — Call your recursive method!
+        makeWords("", letters);
+    }
+
+    public void makeWords(String part, String remaining){
+        words.add(part);
+        // If the right string is empty
+        if(remaining.equals("")){
+            return;
+        }
+        for(int i = 0; i < remaining.length(); i++){
+            // Take one letter out of the remaining
+            String newLetter = remaining.substring(i, i+1);
+            // Get everything but that letter
+            String everythingLeft = remaining.substring(0,i) + remaining.substring(i+1);
+            // Add that letter to the left branch
+            makeWords(part + newLetter, everythingLeft);
+        }
     }
 
     // TODO: Apply mergesort to sort all words. Do this by calling ANOTHER method
     //  that will find the substrings recursively.
     public void sort() {
-        // YOUR CODE HERE
+        mergeSort(0, words.size() - 1);
+    }
+
+    public void mergeSort(int low, int high){
+        if(low >= high){
+            return;
+        }
+        int med = (high + low) / 2;
+        mergeSort(low, med);
+        mergeSort(med + 1, high);
+        merge(low, med, high);
+    }
+
+    public void merge(int low, int med, int high){
+        ArrayList<String> merged = new ArrayList<String>();
+        int i = 0;
+        int j = 0;
+        while (i < med && j < high){
+            if(words.get(i).compareTo(words.get(j)) < 0){
+                merged.add(words.get(i));
+                i++;
+            }
+            else{
+                merged.add(words.get(j));
+                j++;
+            }
+        }
+
+        while(j < med){
+            merged.add(words.get(j));
+            j++;
+        }
+        while(i < high){
+            merged.add(words.get(i));
+            i++;
+        }
+        for(int l = 0; i < merged.size(); i++){
+            words.set(l+low, merged.get(l));
+        }
+
     }
 
     // Removes duplicates from the sorted list.
@@ -69,6 +125,29 @@ public class SpellingBee {
     //  If it is not in the dictionary, remove it from words.
     public void checkWords() {
         // YOUR CODE HERE
+        for(int i = 0; i < words.size(); i++){
+            // If word not found, remove the word
+            if (!(found(words.get(i), 0, DICTIONARY.length -1))){
+               words.remove(i);
+               // Decrease i because .remove skips over it otherwise
+               i--;
+            }
+        }
+    }
+
+    public boolean found(String target, int low, int high){
+        if (low > high)
+            return false;
+        int med = (high + low) / 2;
+        if (DICTIONARY[med].equals(target)){
+            return true;
+        }
+//        if (nums[med] < target)
+//            low = med + 1;
+//        else if (nums[med] > target)
+//            high = med - 1;
+//        return found(target, low, high);
+
     }
 
     // Prints all valid words to wordList.txt
