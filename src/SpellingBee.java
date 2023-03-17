@@ -51,7 +51,7 @@ public class SpellingBee {
     public void makeWords(String part, String remaining){
         words.add(part);
         // If the right string is empty
-        if(remaining.equals("")){
+        if(remaining.length() == 0){
             return;
         }
         for(int i = 0; i < remaining.length(); i++){
@@ -74,36 +74,42 @@ public class SpellingBee {
         if(low >= high){
             return;
         }
+        // Med is average of high and low
         int med = (high + low) / 2;
+        // Recurse on first half
         mergeSort(low, med);
+        // Recurse on second half
         mergeSort(med + 1, high);
-        merge(low, med, high);
+        merge(low, high, med);
     }
 
-    public void merge(int low, int med, int high){
+    public void merge(int low, int high, int med){
         ArrayList<String> merged = new ArrayList<String>();
-        int i = 0;
-        int j = 0;
-        while (i < med && j < high){
+        int i = low;
+        int j = med + 1;
+        //
+        while ((i <= med) && (j <= high)){
+            // If words(i) is greater than words(j)
+            // Add words(i) to new list
             if(words.get(i).compareTo(words.get(j)) < 0){
                 merged.add(words.get(i));
                 i++;
             }
-            else{
+            else {
                 merged.add(words.get(j));
                 j++;
             }
         }
 
-        while(j < med){
-            merged.add(words.get(j));
-            j++;
-        }
-        while(i < high){
+        while(i <= med){
             merged.add(words.get(i));
             i++;
         }
-        for(int l = 0; i < merged.size(); i++){
+        while(j <= high){
+            merged.add(words.get(j));
+            j++;
+        }
+        for(int l = 0; l < merged.size(); l++){
             words.set(l+low, merged.get(l));
         }
 
@@ -142,12 +148,13 @@ public class SpellingBee {
         if (DICTIONARY[med].equals(target)){
             return true;
         }
-//        if (nums[med] < target)
-//            low = med + 1;
-//        else if (nums[med] > target)
-//            high = med - 1;
-//        return found(target, low, high);
-
+        else if(DICTIONARY[med].compareTo(target) > 0){
+            high = med - 1;
+        }
+        else{
+            low = med + 1;
+        }
+        return found(target, low, high);
     }
 
     // Prints all valid words to wordList.txt
