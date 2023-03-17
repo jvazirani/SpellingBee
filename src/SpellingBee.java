@@ -48,8 +48,8 @@ public class SpellingBee {
         makeWords("", letters);
     }
 
-    public void makeWords(String part, String remaining){
-        words.add(part);
+    public void makeWords(String leftSide, String remaining){
+        words.add(leftSide);
         // If the right string is empty
         if(remaining.length() == 0){
             return;
@@ -60,7 +60,7 @@ public class SpellingBee {
             // Get everything but that letter
             String everythingLeft = remaining.substring(0,i) + remaining.substring(i+1);
             // Add that letter to the left branch
-            makeWords(part + newLetter, everythingLeft);
+            makeWords(leftSide + newLetter, everythingLeft);
         }
     }
 
@@ -80,14 +80,14 @@ public class SpellingBee {
         mergeSort(low, med);
         // Recurse on second half
         mergeSort(med + 1, high);
-        merge(low, high, med);
+        merge(low, med, high);
     }
 
-    public void merge(int low, int high, int med){
+    public void merge(int low, int med, int high){
         ArrayList<String> merged = new ArrayList<String>();
+        // i represents first half, j represents second half
         int i = low;
         int j = med + 1;
-        //
         while ((i <= med) && (j <= high)){
             // If words(i) is greater than words(j)
             // Add words(i) to new list
@@ -100,7 +100,7 @@ public class SpellingBee {
                 j++;
             }
         }
-
+        // Add the leftovers
         while(i <= med){
             merged.add(words.get(i));
             i++;
@@ -109,6 +109,7 @@ public class SpellingBee {
             merged.add(words.get(j));
             j++;
         }
+        // make words a copy of merged
         for(int l = 0; l < merged.size(); l++){
             words.set(l+low, merged.get(l));
         }
@@ -133,7 +134,7 @@ public class SpellingBee {
         // YOUR CODE HERE
         for(int i = 0; i < words.size(); i++){
             // If word not found, remove the word
-            if (!(found(words.get(i), 0, DICTIONARY.length -1))){
+            if (!(found(words.get(i), 0, DICTIONARY_SIZE -1))){
                words.remove(i);
                // Decrease i because .remove skips over it otherwise
                i--;
