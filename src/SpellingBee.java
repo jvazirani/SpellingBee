@@ -143,6 +143,7 @@ public class SpellingBee {
     }
 
     public boolean found(String target, int low, int high){
+        // Base cases
         if (low > high)
             return false;
         int med = (high + low) / 2;
@@ -155,6 +156,7 @@ public class SpellingBee {
         else{
             low = med + 1;
         }
+        // Recursive step
         return found(target, low, high);
     }
 
